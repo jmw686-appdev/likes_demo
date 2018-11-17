@@ -17,7 +17,7 @@ router.get('/login', function(req, res){
   if (req.user) {
     res.redirect('/users/'); //+ req.user.username)
   }
-	res.render('users/login', {user: req.user});
+	res.render('users/sign_in', {user: req.user});
 });
 
 router.post('/login', function (req, res, next) {

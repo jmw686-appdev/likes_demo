@@ -19,7 +19,7 @@ const app = express();
 //   { useNewUrlParser: true,
 //     useCreateIndex: true
 //   });
-mongoose.connect('mongodb://' + process.env.MLAB_USER + ':' + process.env.MLAB_PW + '@ds151753.mlab.com:51753/mlab-test',
+mongoose.connect('mongodb://' + process.env.MLAB_USER + ':' + process.env.MLAB_PW + process.env.MLAB_DB,
   { useNewUrlParser: true,
     useCreateIndex: true
   });
