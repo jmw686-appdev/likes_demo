@@ -12,6 +12,12 @@ router.get('/', connect.ensureLoggedIn('/users/login'), function(req, res, next)
   });
 });
 
+router.get('/likes', connect.ensureLoggedIn('/users/login'), function(req, res, next) {
+  User.find({}, function(err, users) {
+   res.render('users/likes', {user: req.user});
+  });
+});
+
 // Login
 router.get('/login', function(req, res){
   if (req.user) {
@@ -26,7 +32,7 @@ router.post('/login', function (req, res, next) {
     failureRedirect: '/users/login'
   }, function(err, user, info) {
     if (err) {console.log(err);}
-
+    console.log("What's happening?");
     res.redirect('/users');
   })(req, res, next); //TODO this right here is the stuff I don't get
 });
@@ -38,7 +44,7 @@ router.get('/logout', function(req, res){
 });
 
 router.get('/signup', function(req, res){
-	res.render('users/signup');
+	res.render('users/sign_up');
 });
 
 router.post('/signup', function(req, res){
