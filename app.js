@@ -16,10 +16,13 @@ const usersRouter = require('./routes/users');
 const app = express();
 
 let tumblrConfig = {
+  "defaults": {
+    "protocol": "http",
+    "host": "localhost:3000"
+  },
   "tumblr": {
     "key": process.env.TUMBLR_CONSUMER_KEY,
     "secret": process.env.TUMBLR_CONSUMER_SECRET,
-    "scope": [],
     "callback": "/tumblr_callback"
   }
 }
