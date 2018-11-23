@@ -3,7 +3,8 @@ const createError = require('http-errors');
 const express = require('express'),
   passport = require('passport'),
   passportConfig = require('./passport'),
-  session = require('express-session');
+  session = require('express-session'),
+  grant = require('grant-express')
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -14,6 +15,14 @@ const usersRouter = require('./routes/users');
 
 const app = express();
 
+let tumblrConfig = {
+  "tumblr": {
+    "key": process.env.TUMBLR_CONSUMER_KEY,
+    "secret": process.env.TUMBLR_CONSUMER_SECRET,
+    "scope": ["scope1", "scope2", ...],
+    "callback": "/tumblr/callback"
+  }
+}
 
 // mongoose.connect('mongodb://localhost:27017/mlab-test',
 //   { useNewUrlParser: true,
