@@ -4,7 +4,7 @@ const express = require('express'),
   passport = require('passport'),
   passportConfig = require('./passport'),
   session = require('express-session'),
-  grant = require('grant-express')
+  grant = require('grant-express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -19,8 +19,8 @@ let tumblrConfig = {
   "tumblr": {
     "key": process.env.TUMBLR_CONSUMER_KEY,
     "secret": process.env.TUMBLR_CONSUMER_SECRET,
-    "scope": ["scope1", "scope2", ...],
-    "callback": "/tumblr/callback"
+    "scope": [],
+    "callback": "/tumblr_callback"
   }
 }
 
@@ -47,10 +47,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({
-  secret: 'keyboard cat',
-   cookie: {},
+  secret: 'grant',
+  cookie:{},
     saveUninitialized: true, resave: false
   }));
+// mount grant
+app.use(grant(tumblrConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));

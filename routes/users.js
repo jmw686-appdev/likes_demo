@@ -26,16 +26,8 @@ router.get('/login', function(req, res){
 	res.render('users/sign_in', {user: req.user});
 });
 
-router.post('/login', function (req, res, next) {
-  passport.authenticate('local', {
-    successReturnToOrRedirect: '/users',
-    failureRedirect: '/users/login'
-  }, function(err, user, info) {
-    if (err) {console.log(err);}
-    console.log("What's happening?");
-    res.redirect('/users');
-  })(req, res, next); //TODO this right here is the stuff I don't get
-});
+router.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/users/login' }));
+
 
 // logout
 router.get('/logout', function(req, res){
