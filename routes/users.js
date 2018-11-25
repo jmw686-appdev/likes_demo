@@ -15,34 +15,52 @@ router.get('/', connect.ensureLoggedIn('/users/login'), function(req, res, next)
 
 router.get('/likes', connect.ensureLoggedIn('/users/login'), function(req, res, next) {
   // Authenticate via OAuth
+  // let client = tumblr.createClient({
+  //   consumer_key: process.env.TUMBLR_CONSUMER_KEY,
+  //   consumer_secret: process.env.TUMBLR_CONSUMER_SECRET,
+  //   token: process.env.token,
+  //   token_secret: process.env.secret
+  // });
+  let offset = 0
   let client = tumblr.createClient({
     consumer_key: process.env.TUMBLR_CONSUMER_KEY,
     consumer_secret: process.env.TUMBLR_CONSUMER_SECRET,
-    token: req.user.access_token,
-    token_secret: req.user.access_secret
+    token: process.env.token,
+    token_secret: process.env.secret
   });
 
   let likes = []
   // Show user's blog likes
-  client.userInfo(function(err, data) {
-    console.log(data);
+
+  client.userLikes({offset: offset}, function(err, data) {
     console.log(err);
-    // data.user.blogs.forEach(function(blog) {
-    //   console.log(blog.name);
-    // });
+    if (!err) {
+      console.log(data.liked_posts)
+      likes = [...data.liked_posts]
+      res.render("users/likes", {likes: likes, offset: (parseInt(offset) + 20) });
+    }
   });
-  res.end(JSON.stringify(req.query, null, 2))
-  // client.userLikes({offset: 0}, function(err, data) {
+  // let likes = []
+  // // Show user's blog likes
+  // client.userInfo(function(err, data) {
+  //   console.log(data);
   //   console.log(err);
-  //   if (!err) {
-  //     console.log(data.liked_posts)
-  //     likes = [...data.liked_posts]
-  //     res.render("users/likes", {likes: likes, offset: 0 });
-  //   }
-  //   else {
-  //     res.end(JSON.stringify(req.query, null, 2))
-  //   }
+  //   // data.user.blogs.forEach(function(blog) {
+  //   //   console.log(blog.name);
+  //   // });
   // });
+  // res.end(JSON.stringify(req.query, null, 2))
+  // // client.userLikes({offset: 0}, function(err, data) {
+  // //   console.log(err);
+  // //   if (!err) {
+  // //     console.log(data.liked_posts)
+  // //     likes = [...data.liked_posts]
+  // //     res.render("users/likes", {likes: likes, offset: 0 });
+  // //   }
+  // //   else {
+  // //     res.end(JSON.stringify(req.query, null, 2))
+  // //   }
+  // // });
 });
 
 router.get('/likes/:offset', connect.ensureLoggedIn('/users/login'), function(req, res){
@@ -51,8 +69,8 @@ router.get('/likes/:offset', connect.ensureLoggedIn('/users/login'), function(re
   let client = tumblr.createClient({
     consumer_key: process.env.TUMBLR_CONSUMER_KEY,
     consumer_secret: process.env.TUMBLR_CONSUMER_SECRET,
-    token: req.user.access_token,
-    token_secret: req.user.access_secret
+    token: process.env.token,
+    token_secret: process.env.secret
   });
 
   let likes = []
@@ -69,6 +87,25 @@ router.get('/likes/:offset', connect.ensureLoggedIn('/users/login'), function(re
 
 });
 
+router.get('/unlike/:id/:reblog_key', function(req, res){
+  let id = req.params.id
+  let reblog_key = req.params.reblog_key
+  let client = tumblr.createClient({
+    consumer_key: process.env.TUMBLR_CONSUMER_KEY,
+    consumer_secret: process.env.TUMBLR_CONSUMER_SECRET,
+    token: process.env.token,
+    token_secret: process.env.secret
+  });
+  client.unlike(id, reblog_key, function (err, data) {
+      // ...
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(data);
+      }
+      res.redirect('/users/likes');
+  });
+});
 
 // Login
 router.get('/login', function(req, res){
